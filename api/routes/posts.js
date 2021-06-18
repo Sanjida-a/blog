@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 });
 
 //UPDATE POST
-router.put(".:id",async(req, res) =>{
+router.put("/:id",async(req, res) => {
     try{
         const post = await Post.findById(req.params.id);
         if(post.username === req.body.username){
@@ -30,7 +30,7 @@ router.put(".:id",async(req, res) =>{
                   res.status(200).json(updatedPost);
                 } catch(err){
                     res.status(500).json(err);
-        }
+                }
     }else{
         res.status(401).json("You can only update your own post.")
     }
@@ -39,7 +39,7 @@ router.put(".:id",async(req, res) =>{
     }
 });
 //DELETE POST
-router.delete(".:id",async(req, res) =>{
+router.delete("/:id",async(req, res) => {
     try{
         const post = await Post.findById(req.params.id);
         if(post.username === req.body.username){
@@ -48,23 +48,23 @@ router.delete(".:id",async(req, res) =>{
                 res.status(200).json("Post has been deleted.");
                 } catch(err){
                     res.status(500).json(err);
-        }
-    }else{
+                }
+    } else {
         res.status(401).json("You can only delete your own post.")
-    }
-    }catch(err){
+        }
+    } catch(err){
         res.status(500).json(err);
     }
 });
 
 //GET POST
-router.get("/:id",async(req,res)=>{
+router.get("/:id",async(req,res) => {
     try{
-        const post = await Post.findbyId(req.params.id);
+        const post = await Post.findById(req.params.id);
         res.status(200).json(post);
-        }catch(err){
+        } catch(err){
             res.status(500).json(err);
-    }
+        }
 });
 
 //GET ALL POSTS
@@ -72,12 +72,13 @@ router.get("/",async(req,res)=>{
     const username = req.query.user;
     const catName = req.query.cat;
     try{
-        let posts
+        let posts;
         if(username){
             posts = await Post.find({username});
         }else if(catName){
             posts = await Post.find({categories:{
-                $in:[catName]}
+                $in:[catName],
+            },
             });
         }else{
             posts = await Post.find();
